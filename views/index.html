@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./../public/estilos/styles.css">
+  <title>Gestor de Tareas</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Gestor de Tareas</h1>
+  </header>
+  
+  <div class="form-container">
+    <form id="form-tarea">
+      <input type="hidden" id="tarea-id">
+  
+      <div class="form-group">
+        <label for="titulo">Título*</label>
+        <input type="text" id="titulo" placeholder="Ej: Terminar proyecto" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" rows="3" placeholder="Detalles de la tarea"></textarea>
+      </div>
+      
+      <div style="display: flex; gap: 15px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="prioridad">Prioridad</label>
+          <select id="prioridad">
+            <option value="baja">Baja</option>
+            <option value="media" selected>Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+        
+        <div class="form-group" style="flex: 1;">
+          <label for="fecha">Fecha Límite</label>
+          <input type="date" id="fecha">
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 10px;">
+        <button type="submit" id="btn-crear">Crear Tarea</button>
+        <button type="submit" id="btn-actualizar" style="display: none; background: #ff9800;">Actualizar Tarea</button>
+        <button type="button" id="btn-cancelar" style="display: none; background: #f44336;">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="filtros-container">
+    <div class="filtro-group">
+      <label for="filtro-prioridad">Prioridad</label>
+      <select id="filtro-prioridad">
+        <option value="">Todas</option>
+        <option value="baja">Baja</option>
+        <option value="media">Media</option>
+        <option value="alta">Alta</option>
+      </select>
+    </div>
+    
+    <div class="filtro-group">
+      <label for="filtro-estado">Estado</label>
+      <select id="filtro-estado">
+        <option value="">Todas</option>
+        <option value="completadas">Completadas</option>
+        <option value="pendientes">Pendientes</option>
+      </select>
+    </div>
+    
+    <div class="filtro-group">
+      <label for="filtro-fecha">Fecha</label>
+      <select id="filtro-fecha">
+        <option value="">Todas</option>
+        <option value="hoy">Hoy</option>
+        <option value="semana">Esta semana</option>
+        <option value="mes">Este mes</option>
+        <option value="vencidas">Vencidas</option>
+      </select>
+    </div>
+    
+    <button id="btn-limpiar" class="btn-filtro">Limpiar Filtros</button>
+  </div>
+  <div id="lista-tareas"></div>
+</body>
+</html>

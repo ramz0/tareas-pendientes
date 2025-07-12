@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const tareasController = require('../controllers/tareasController');
+const { authenticateToken } = require('../middlewares/autenticacionMiddleware');
 
-// CRUD Routes
-router.post('/', tareasController.crearTarea);         // Create
-router.get('/', tareasController.obtenerTareas);       // Read (all)
-router.get('/:id', tareasController.obtenerTarea);     // Read (one)
-router.put('/:id', tareasController.actualizarTarea);  // Update
-router.delete('/:id', tareasController.eliminarTarea); // Delete
+// 🔐 Aplica el middleware a TODAS las rutas
+router.use(authenticateToken); 
+
+// CRUD Routes (ya protegidas)
+router.post('/', tareasController.crearTarea);
+router.get('/', tareasController.obtenerTareas);
+router.get('/:id', tareasController.obtenerTarea);
+router.put('/:id', tareasController.actualizarTarea);
+router.delete('/:id', tareasController.eliminarTarea);
 
 module.exports = router;

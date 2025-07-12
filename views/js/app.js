@@ -1,11 +1,23 @@
+const token = localStorage.getItem('token');
 const API_URL = 'http://localhost:4545/tareas';
 let todasLasTareas = [];
 let tareaEditando = null;
+
+if (!token) {
+  alert('Debes iniciar sesión');
+  window.location.href = 'login.html';
+}
 
 $(document).ready(function() {
   cargarTareas();
   configurarEventos();
 });
+
+$('#logout-btn').click(function () {
+  localStorage.removeItem('token');
+  window.location.href = 'login.html';
+});
+
 
 function configurarEventos() {
   $('#form-tarea').submit(manejarEnvioFormulario);
@@ -20,14 +32,41 @@ function configurarEventos() {
 }
 
 function cargarTareas() {
-  $.get(API_URL)
-    .done(function(tareas) {
+  $.ajax({
+    url: API_URL,
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    success: function(tareas) {
       todasLasTareas = tareas;
       mostrarTareas(todasLasTareas);
-    })
-    .fail(function() {
-      mostrarError('Error cargando tareas');
-    });
+    },
+    error: function(xhr) {
+      mostrarError(xhr.responseJSON?.error || 'Error al cargar tareas');
+    }
+  });
+}
+
+function crearTarea(tareaData) {
+  $.ajax({
+    url: API_URL,
+    method: 'POST',
+    headers: {  // 👈 AÑADE ESTA PARTE
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({ ...tareaData, completada: false }),
+    success: function(tarea) {
+      todasLasTareas.push(tarea);
+      mostrarTareas(todasLasTareas);
+      resetearFormulario();
+      mostrarMensaje('Tarea creada exitosamente');
+    },
+    error: function(xhr) {
+      mostrarError(xhr.responseJSON?.error || 'Error al crear tarea');
+    }
+  });
 }
 
 function mostrarTareas(tareas) {
@@ -103,28 +142,13 @@ function manejarEnvioFormulario(e) {
   }
 }
 
-function crearTarea(tareaData) {
-  $.ajax({
-    url: API_URL,
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({ ...tareaData, completada: false }),
-    success: function(tarea) {
-      todasLasTareas.push(tarea);
-      mostrarTareas(todasLasTareas);
-      resetearFormulario();
-      mostrarMensaje('Tarea creada exitosamente');
-    },
-    error: function(xhr) {
-      mostrarError(xhr.responseJSON?.error || 'Error al crear tarea');
-    }
-  });
-}
-
 function actualizarTarea(id, tareaData) {
   $.ajax({
-    url: `${API_URL}/${id}`,
+     url: `${API_URL}/${id}`,
     method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
     contentType: 'application/json',
     data: JSON.stringify(tareaData),
     success: function(tareaActualizada) {
@@ -168,6 +192,9 @@ function manejarEliminacion() {
     $.ajax({
       url: `${API_URL}/${id}`,
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
       success: function() {
         todasLasTareas = todasLasTareas.filter(t => t._id !== id);
         mostrarTareas(todasLasTareas);
@@ -188,6 +215,9 @@ function manejarEstado() {
   $.ajax({
     url: `${API_URL}/${id}`,
     method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
     contentType: 'application/json',
     data: JSON.stringify({ completada }),
     success: function() {

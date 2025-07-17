@@ -54,7 +54,11 @@ async function verificarTareasPorVencer() {
           timeStyle: 'short'
         });
 
-        const mensaje = `${tipo}\n\n*${tarea.titulo}*\n\n📝 ${tarea.descripcion || 'Sin descripción'}\n\n⏱️ Prioridad: *${tarea.prioridad}*\n🗓️ Fecha límite: *${fechaFormateada}*`;
+        const mensaje = `${tipo}\n\n
+        *${tarea.titulo}*\n\n
+        📝 ${tarea.descripcion || 'Sin descripción'}\n\n
+        ⏱️ Prioridad: *${tarea.prioridad}*\n
+        🗓️ Fecha límite: *${fechaFormateada}*`;
 
         try {
           await axios.post(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
